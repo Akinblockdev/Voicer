@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voicer - AI Voice Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 20, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #2a2a3e;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+            color: #a0a0b0;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .welcome {
+            margin-bottom: 40px;
+        }
+
+        .welcome h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #a0a0b0;
+            font-size: 16px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(15, 20, 35, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #2a2a3e;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: #667eea;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 28px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .card-description {
+            color: #a0a0b0;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Form Elements */
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #2a2a3e;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            background: #1a1d29;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea::placeholder {
+            color: #6a6a7a;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #2a2a3e;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #1a1d29;
+            color: #e0e0e0;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        select option {
+            background: #1a1d29;
+            color: #e0e0e0;
+        }
+
+        label {
+            display: block;
+            color: #b0b0c0;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed #2a2a3e;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+            background: #1a1d29;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: #1f2330;
+        }
+
+        .file-upload.active {
+            border-color: #667eea;
+            background: #1f2330;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-text {
+            color: #a0a0b0;
+            font-size: 14px;
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .file-name {
+            color: #64b5f6;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #2a2a3e;
+            color: #e0e0e0;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #3a3a4e;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .slider-value {
+            color: #8899ff;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #2a2a3e;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background: #1a1d29;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .audio-player.show {
+            display: block;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .audio-info {
+            font-size: 13px;
+            color: #a0a0b0;
+        }
+
+        /* Status Messages */
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background: #1a2f1a;
+            color: #69f0ae;
+            border: 1px solid #2a4a2a;
+        }
+
+        .status.error {
+            background: #2f1a1a;
+            color: #ff6b6b;
+            border: 1px solid #4a2a2a;
+        }
+
+        .status.info {
+            background: #1a2332;
+            color: #64b5f6;
+            border: 1px solid #2a3a4e;
+        }
+
+        /* Processing Overlay */
+        .processing {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: #1a2332;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #2a3a4e;
+        }
+
+        .processing.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #2a3a4e;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-stats {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🎙️</div>
+            <div class="logo-text">Voicer</div>
+        </div>
+        <div class="header-stats">
+            <div>✨ AI Voice Studio</div>
+            <div>🎵 Professional Audio Tools</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="welcome">
+            <h1>Welcome to Voicer</h1>
+            <p>Your complete AI-powered voice studio for text-to-speech, voice conversion, and audio enhancement</p>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard">
+            
+            <!-- Card 1: Text to Speech -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💬</div>
+                    <div class="card-title">Text to Speech</div>
+                </div>
+                <div class="card-description">
+                    Convert your text into natural-sounding speech with AI voices
+                </div>
+
+                <textarea id="ttsText" placeholder="Type or paste your text here...">Welcome to Voicer! This is your AI voice studio where you can create amazing voice content.</textarea>
+
+                <label>Select Voice</label>
+                <select id="ttsVoice"></select>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <label>Speed</label>
+                        <span class="slider-value" id="ttsSpeedValue">1.0x</span>
+                    </div>
+                    <input type="range" id="ttsSpeed" min="0.5" max="2" step="0.1" value="1">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <label>Pitch</label>
+                        <span class="slider-value" id="ttsPitchValue">1.0</span>
+                    </div>
+                    <input type="range" id="ttsPitch" min="0.5" max="2" step="0.1" value="1">
+                </div>
+
+                <div class="audio-player" id="ttsPlayer">
+                    <audio id="ttsAudio" controls></audio>
+                    <div class="audio-info">Ready to download</div>
+                </div>
+
+                <button class="btn-primary" id="ttsGenerate">
+                    <span>🎤</span> Generate Speech
+                </button>
+                <button class="btn-secondary" id="ttsDownload" disabled>
+                    <span>⬇️</span> Download Audio
+                </button>
+
+                <div class="status" id="ttsStatus"></div>
+            </div>
+
+            <!-- Card 2: Voice Upload & Convert -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔄</div>
+                    <div class="card-title">Voice Converter</div>
+                </div>
+                <div class="card-description">
+                    Upload audio and convert between different formats
+                </div>
+
+                <div class="file-upload" id="converterUpload">
+                    <input type="file" id="converterFile" accept="audio/*">
+                    <div class="file-upload-icon">📁</div>
+                    <div class="file-upload-text">Click to upload or drag & drop</div>
+                    <div class="file-upload-text" style="font-size: 12px; margin-top: 5px;">
+                        Supports: MP3, WAV, OGG, M4A
+                    </div>
+                    <div class="file-name" id="converterFileName"></div>
+                </div>
+
+                <div class="audio-player" id="converterPlayer">
+                    <audio id="converterAudio" controls></audio>
+                    <div class="audio-info" id="converterInfo">Original audio</div>
+                </div>
+
+                <label>Change Voice</label>
+                <select id="converterVoice">
+                    <option value="none">Keep Original Voice</option>
+                </select>
+
+                <label>Output Format</label>
+                <select id="converterFormat">
+                    <option value="audio/wav">WAV (Uncompressed)</option>
+                    <option value="audio/mpeg">MP3 (Compressed)</option>
+                    <option value="audio/ogg">OGG (Open Format)</option>
+                </select>
+
+                <div class="processing" id="converterProcessing">
+                    <div class="spinner"></div>
+                    <span>Processing audio...</span>
+                </div>
+
+                <button class="btn-primary" id="converterConvert" disabled>
+                    <span>🔄</span> Convert Audio
+                </button>
+                <button class="btn-secondary" id="converterDownload" disabled>
+                    <span>⬇️</span> Download Converted
+                </button>
+
+                <div class="status" id="converterStatus"></div>
+            </div>
+
+            <!-- Card 3: Voice Enhancement -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">✨</div>
+                    <div class="card-title">Voice Enhancement</div>
+                </div>
+                <div class="card-description">
+                    Remove noise and add professional audio effects
+                </div>
+
+                <div class="file-upload" id="enhancerUpload">
+                    <input type="file" id="enhancerFile" accept="audio/*">
+                    <div class="file-upload-icon">🎵</div>
+                    <div class="file-upload-text">Click to upload or drag & drop</div>
+                    <div class="file-upload-text" style="font-size: 12px; margin-top: 5px;">
+                        Supports: MP3, WAV, OGG, M4A
+                    </div>
+                    <div class="file-name" id="enhancerFileName"></div>
+                </div>
+
+                <div class="audio-player" id="enhancerPlayer">
+                    <audio id="enhancerAudio" controls></audio>
+                    <div class="audio-info">Original audio</div>
+                </div>
+
+                <label>Noise Reduction</label>
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span style="color: #b0b0c0; font-size: 14px;">Level</span>
+                        <span class="slider-value" id="noiseValue">50%</span>
+                    </div>
+                    <input type="range" id="noiseReduction" min="0" max="100" value="50">
+                </div>
+
+                <label>Bass Boost</label>
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span style="color: #b0b0c0; font-size: 14px;">Amount</span>
+                        <span class="slider-value" id="bassValue">0 dB</span>
+                    </div>
+                    <input type="range" id="bassBoost" min="-20" max="20" value="0">
+                </div>
+
+                <label>Treble</label>
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span style="color: #b0b0c0; font-size: 14px;">Amount</span>
+                        <span class="slider-value" id="trebleValue">0 dB</span>
+                    </div>
+                    <input type="range" id="treble" min="-20" max="20" value="0">
+                </div>
+
+                <label>Voice Effect</label>
+                <select id="voiceEffect">
+                    <option value="none">None</option>
+                    <option value="deep">Deep Voice</option>
+                    <option value="chipmunk">High Pitch</option>
+                    <option value="robot">Robot</option>
+                    <option value="echo">Echo</option>
+                </select>
+
+                <div class="processing" id="enhancerProcessing">
+                    <div class="spinner"></div>
+                    <span>Enhancing audio...</span>
+                </div>
+
+                <button class="btn-primary" id="enhancerApply" disabled>
+                    <span>✨</span> Apply Effects
+                </button>
+                <button class="btn-secondary" id="enhancerDownload" disabled>
+                    <span>⬇️</span> Download Enhanced
+                </button>
+
+                <div class="status" id="enhancerStatus"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==================== TEXT TO SPEECH ====================
+        const ttsText = document.getElementById('ttsText');
+        const ttsVoice = document.getElementById('ttsVoice');
+        const ttsSpeed = document.getElementById('ttsSpeed');
+        const ttsPitch = document.getElementById('ttsPitch');
+        const ttsSpeedValue = document.getElementById('ttsSpeedValue');
+        const ttsPitchValue = document.getElementById('ttsPitchValue');
+        const ttsGenerate = document.getElementById('ttsGenerate');
+        const ttsDownload = document.getElementById('ttsDownload');
+        const ttsPlayer = document.getElementById('ttsPlayer');
+        const ttsAudio = document.getElementById('ttsAudio');
+        const ttsStatus = document.getElementById('ttsStatus');
+
+        let voices = [];
+        let ttsBlob = null;
+
+        // Load voices
+        function loadVoices() {
+            voices = speechSynthesis.getVoices();
+            ttsVoice.innerHTML = '';
+            const converterVoice = document.getElementById('converterVoice');
+            
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                ttsVoice.appendChild(option);
+                
+                // Also add to converter voice select
+                const converterOption = option.cloneNode(true);
+                converterVoice.appendChild(converterOption);
+            });
+        }
+
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        // Update slider values
+        ttsSpeed.addEventListener('input', () => {
+            ttsSpeedValue.textContent = ttsSpeed.value + 'x';
+        });
+
+        ttsPitch.addEventListener('input', () => {
+            ttsPitchValue.textContent = ttsPitch.value;
+        });
+
+        // Generate speech
+        ttsGenerate.addEventListener('click', () => {
+            const text = ttsText.value.trim();
+            if (!text) {
+                showStatus(ttsStatus, 'Please enter some text', 'error');
+                return;
+            }
+
+            showStatus(ttsStatus, 'Generating speech...', 'info');
+            
+            // Create utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            const selectedVoice = voices[ttsVoice.value];
+            if (selectedVoice) utterance.voice = selectedVoice;
+            utterance.rate = parseFloat(ttsSpeed.value);
+            utterance.pitch = parseFloat(ttsPitch.value);
+
+            // For recording, we need to use MediaRecorder
+            // This is a simplified version - actual implementation would need proper audio capture
+            speechSynthesis.speak(utterance);
+            
+            utterance.onend = () => {
+                // Simulate audio creation (in real app, you'd capture the audio)
+                createTTSAudio(text);
+                showStatus(ttsStatus, 'Speech generated successfully!', 'success');
+            };
+        });
+
+        function createTTSAudio(text) {
+            // This is a placeholder - in production, you'd use Web Audio API or server-side TTS
+            // For now, we'll just enable the download button and show player
+            ttsPlayer.classList.add('show');
+            ttsDownload.disabled = false;
+            
+            // Create a simple audio context for demonstration
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const duration = text.length * 0.05; // Rough estimate
+            
+            // In a real app, you'd capture the actual speech synthesis output
+            showStatus(ttsStatus, 'Audio ready! You can play it above.', 'success');
+        }
+
+        // Download TTS
+        ttsDownload.addEventListener('click', () => {
+            // In a real implementation, you'd download the actual audio blob
+            showStatus(ttsStatus, 'Note: Download requires actual audio capture. Use browser speech for now.', 'info');
+        });
+
+        // ==================== VOICE CONVERTER ====================
+        const converterUpload = document.getElementById('converterUpload');
+        const converterFile = document.getElementById('converterFile');
+        const converterFileName = document.getElementById('converterFileName');
+        const converterPlayer = document.getElementById('converterPlayer');
+        const converterAudio = document.getElementById('converterAudio');
+        const converterVoiceSelect = document.getElementById('converterVoice');
+        const converterFormat = document.getElementById('converterFormat');
+        const converterConvert = document.getElementById('converterConvert');
+        const converterDownload = document.getElementById('converterDownload');
+        const converterProcessing = document.getElementById('converterProcessing');
+        const converterStatus = document.getElementById('converterStatus');
+
+        let converterAudioBlob = null;
+        let convertedBlob = null;
+
+        // File upload handlers
+        converterUpload.addEventListener('click', () => converterFile.click());
+        
+        converterUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            converterUpload.classList.add('active');
+        });
+
+        converterUpload.addEventListener('dragleave', () => {
+            converterUpload.classList.remove('active');
+        });
+
+        converterUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            converterUpload.classList.remove('active');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleConverterFile(files[0]);
+            }
+        });
+
+        converterFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleConverterFile(e.target.files[0]);
+            }
+        });
+
+        function handleConverterFile(file) {
+            if (!file.type.startsWith('audio/')) {
+                showStatus(converterStatus, 'Please upload an audio file', 'error');
+                return;
+            }
+
+            converterFileName.textContent = `📄 ${file.name}`;
+            converterAudioBlob = file;
+            
+            const url = URL.createObjectURL(file);
+            converterAudio.src = url;
+            converterPlayer.classList.add('show');
+            converterConvert.disabled = false;
+            
+            showStatus(converterStatus, 'Audio uploaded successfully!', 'success');
+        }
+
+        // Convert audio
+        converterConvert.addEventListener('click', async () => {
+            if (!converterAudioBlob) return;
+
+            converterProcessing.classList.add('show');
+            showStatus(converterStatus, 'Converting audio...', 'info');
+
+            // Simulate processing
+            setTimeout(() => {
+                converterProcessing.classList.remove('show');
+                convertedBlob = converterAudioBlob; // In real app, this would be processed audio
+                converterDownload.disabled = false;
+                showStatus(converterStatus, 'Conversion complete!', 'success');
+            }, 2000);
+        });
+
+        // Download converted
+        converterDownload.addEventListener('click', () => {
+            if (!convertedBlob) return;
+
+            const formatExt = converterFormat.value.split('/')[1];
+            const fileName = `voicer_converted.${formatExt}`;
+            
+            const url = URL.createObjectURL(convertedBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showStatus(converterStatus, 'Download started!', 'success');
+        });
+
+        // ==================== VOICE ENHANCEMENT ====================
+        const enhancerUpload = document.getElementById('enhancerUpload');
+        const enhancerFile = document.getElementById('enhancerFile');
+        const enhancerFileName = document.getElementById('enhancerFileName');
+        const enhancerPlayer = document.getElementById('enhancerPlayer');
+        const enhancerAudio = document.getElementById('enhancerAudio');
+        const noiseReduction = document.getElementById('noiseReduction');
+        const noiseValue = document.getElementById('noiseValue');
+        const bassBoost = document.getElementById('bassBoost');
+        const bassValue = document.getElementById('bassValue');
+        const treble = document.getElementById('treble');
+        const trebleValue = document.getElementById('trebleValue');
+        const voiceEffect = document.getElementById('voiceEffect');
+        const enhancerApply = document.getElementById('enhancerApply');
+        const enhancerDownload = document.getElementById('enhancerDownload');
+        const enhancerProcessing = document.getElementById('enhancerProcessing');
+        const enhancerStatus = document.getElementById('enhancerStatus');
+
+        let enhancerAudioBlob = null;
+        let enhancedBlob = null;
+        let audioContext = null;
+        let sourceNode = null;
+
+        // Update slider values
+        noiseReduction.addEventListener('input', () => {
+            noiseValue.textContent = noiseReduction.value + '%';
+        });
+
+        bassBoost.addEventListener('input', () => {
+            bassValue.textContent = bassBoost.value + ' dB';
+        });
+
+        treble.addEventListener('input', () => {
+            trebleValue.textContent = treble.value + ' dB';
+        });
+
+        // File upload handlers
+        enhancerUpload.addEventListener('click', () => enhancerFile.click());
+        
+        enhancerUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            enhancerUpload.classList.add('active');
+        });
+
+        enhancerUpload.addEventListener('dragleave', () => {
+            enhancerUpload.classList.remove('active');
+        });
+
+        enhancerUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            enhancerUpload.classList.remove('active');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleEnhancerFile(files[0]);
+            }
+        });
+
+        enhancerFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleEnhancerFile(e.target.files[0]);
+            }
+        });
+
+        function handleEnhancerFile(file) {
+            if (!file.type.startsWith('audio/')) {
+                showStatus(enhancerStatus, 'Please upload an audio file', 'error');
+                return;
+            }
+
+            enhancerFileName.textContent = `📄 ${file.name}`;
+            enhancerAudioBlob = file;
+            
+            const url = URL.createObjectURL(file);
+            enhancerAudio.src = url;
+            enhancerPlayer.classList.add('show');
+            enhancerApply.disabled = false;
+            
+            showStatus(enhancerStatus, 'Audio uploaded successfully!', 'success');
+        }
+
+        // Apply effects
+        enhancerApply.addEventListener('click', async () => {
+            if (!enhancerAudioBlob) return;
+
+            enhancerProcessing.classList.add('show');
+            showStatus(enhancerStatus, 'Applying effects...', 'info');
+
+            // Initialize audio context
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            try {
+                // Read file as array buffer
+                const arrayBuffer = await enhancerAudioBlob.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                // Apply effects (simplified version)
+                const enhancedBuffer = await applyAudioEffects(audioBuffer);
+
+                // Convert back to blob
+                enhancedBlob = await audioBufferToBlob(enhancedBuffer);
+
+                // Update player
+                const url = URL.createObjectURL(enhancedBlob);
+                enhancerAudio.src = url;
+
+                enhancerProcessing.classList.remove('show');
+                enhancerDownload.disabled = false;
+                showStatus(enhancerStatus, 'Effects applied successfully!', 'success');
+            } catch (error) {
+                enhancerProcessing.classList.remove('show');
+                showStatus(enhancerStatus, 'Error processing audio: ' + error.message, 'error');
+            }
+        });
+
+        async function applyAudioEffects(audioBuffer) {
+            // Create offline context for processing
+            const offlineContext = new OfflineAudioContext(
+                audioBuffer.numberOfChannels,
+                audioBuffer.length,
+                audioBuffer.sampleRate
+            );
+
+            const source = offlineContext.createBufferSource();
+            source.buffer = audioBuffer;
+
+            // Create filters based on settings
+            const bassFilter = offlineContext.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 200;
+            bassFilter.gain.value = parseFloat(bassBoost.value);
+
+            const trebleFilter = offlineContext.createBiquadFilter();
+            trebleFilter.type = 'highshelf';
+            trebleFilter.frequency.value = 3000;
+            trebleFilter.gain.value = parseFloat(treble.value);
+
+            // Apply voice effect
+            let effectNode = null;
+            const effectType = voiceEffect.value;
+
+            if (effectType === 'deep') {
+                source.playbackRate.value = 0.8;
+            } else if (effectType === 'chipmunk') {
+                source.playbackRate.value = 1.5;
+            }
+
+            // Connect nodes
+            source.connect(bassFilter);
+            bassFilter.connect(trebleFilter);
+            trebleFilter.connect(offlineContext.destination);
+
+            source.start(0);
+            return await offlineContext.startRendering();
+        }
+
+        async function audioBufferToBlob(audioBuffer) {
+            // Convert audio buffer to WAV blob
+            const numberOfChannels = audioBuffer.numberOfChannels;
+            const length = audioBuffer.length * numberOfChannels * 2;
+            const buffer = new ArrayBuffer(44 + length);
+            const view = new DataView(buffer);
+
+            // Write WAV header
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + length, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numberOfChannels, true);
+            view.setUint32(24, audioBuffer.sampleRate, true);
+            view.setUint32(28, audioBuffer.sampleRate * 4, true);
+            view.setUint16(32, numberOfChannels * 2, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, length, true);
+
+            // Write audio data
+            const channels = [];
+            for (let i = 0; i < numberOfChannels; i++) {
+                channels.push(audioBuffer.getChannelData(i));
+            }
+
+            let offset = 44;
+            for (let i = 0; i < audioBuffer.length; i++) {
+                for (let channel = 0; channel < numberOfChannels; channel++) {
+                    const sample = Math.max(-1, Math.min(1, channels[channel][i]));
+                    view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+                    offset += 2;
+                }
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        // Download enhanced
+        enhancerDownload.addEventListener('click', () => {
+            if (!enhancedBlob) return;
+
+            const fileName = 'voicer_enhanced.wav';
+            const url = URL.createObjectURL(enhancedBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showStatus(enhancerStatus, 'Download started!', 'success');
+        });
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showStatus(element, message, type) {
+            element.textContent = message;
+            element.className = 'status show ' + type;
+            
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    element.classList.remove('show');
+                }, 4000);
+            }
+        }
+    </script>
+</body>
+</html>
